@@ -50,8 +50,10 @@ class ApiGuardController extends Controller
     /**
      * Attempt to get an authenticated user and build the response object.
      */
-    private function attachMiddlewareResult(){
+    private function attachMiddlewareResult()
+    {
         $this->user = ApiGuardAuth::getUser();
+
         $this->response = ApiResponseBuilder::build();
     }
 
@@ -60,7 +62,8 @@ class ApiGuardController extends Controller
      * currently running laravel application.
      * @return float version e.g: 5.3
      */
-    private function getLaravelVersion(){
+    private function getLaravelVersion()
+    {
         $appVersion = method_exists(app(), 'version') ? app()->version() : app()::VERSION;
         return floatval(substr($appVersion, 0, strpos($appVersion, '.',2)));
     }
