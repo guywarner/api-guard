@@ -34,10 +34,35 @@ class ApiGuardController extends Controller
         // Launch middleware
         $this->middleware('apiguard:' . $serializedApiMethods);
 
-        // Attempt to get an authenticated user.
-        $this->user = ApiGuardAuth::getUser();
+        if(getLaravelVersion() >= 5.3){
+            // After 5.3, we cannot assign the user to the
+            // controller until the middleware has completed.
+            $this->middleware(function ($request, $next) {
+                attachMiddlewareResult();
+                return $next($request);
+            });
+        }else{
+            attachMiddlewareResult();
+        }
+    }
 
+
+    /**
+     * Attempt to get an authenticated user and build the response object.
+     */
+    private function attachMiddlewareResult(){
+        $this->user = ApiGuardAuth::getUser();
         $this->response = ApiResponseBuilder::build();
+    }
+
+    /**
+     * Returns the major and minor version of the
+     * currently running laravel application.
+     * @return float version e.g: 5.3
+     */
+    private function getLaravelVersion(){
+        $appVersion = method_exists(app(), 'version') ? app()->version() : app()::VERSION;
+        return floatval(substr($appVersion, 0, strpos($appVersion, '.',2)));
     }
 
 }
