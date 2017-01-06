@@ -34,15 +34,15 @@ class ApiGuardController extends Controller
         // Launch middleware
         $this->middleware('apiguard:' . $serializedApiMethods);
 
-        if(getLaravelVersion() >= 5.3){
+        if($this->getLaravelVersion() >= 5.3){
             // After 5.3, we cannot assign the user to the
             // controller until the middleware has completed.
             $this->middleware(function ($request, $next) {
-                attachMiddlewareResult();
+                $this->attachMiddlewareResult();
                 return $next($request);
             });
         }else{
-            attachMiddlewareResult();
+            $this->attachMiddlewareResult();
         }
     }
 
